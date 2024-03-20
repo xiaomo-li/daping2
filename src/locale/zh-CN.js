@@ -27,6 +27,8 @@ const zh_CN = {
   "common.personalAccountManager": "专属客服",
   "common.second": "秒 | {0}秒",
   "common.hour": "小时 | {0}小时",
+  "common.nullTip1": "您尚未激活/未开始运行！",
+  "common.nullTip2": "暂无设备数据/或未开始运行！",
 
   "main.startOperation": "开始运行",
   "main.stopRunning": "停止运行",

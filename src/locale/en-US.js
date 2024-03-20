@@ -27,6 +27,8 @@ const en_US = {
   "common.personalAccountManager": "Personal account manager",
   "common.second": "{0} Second | {0} Seconds",
   "common.hour": "{0} hour | {0} hours",
+  "common.nullTip1": "You have not activated/started running yet!",
+  "common.nullTip2": "There is no device data/or it has not started running!",
 
   "main.startOperation": "Start operation",
   "main.stopRunning": "Stop running",

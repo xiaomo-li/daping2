@@ -9,12 +9,12 @@ import "../src/style.css";
 import "./rem";
 import en_US from "./locale/en-US";
 import zh_CN from "./locale/zh-CN";
-// import zhCn from "element-plus/dist/locale/zh-cn.mjs";
+
 const app = createApp(App);
 
 const i18n = createI18n({
-  locale: "zh-cn",
-  // locale: "en-us",
+  // locale: "zh-cn",
+  locale: "en-us",
 
   messages: {
     "en-us": en_US,

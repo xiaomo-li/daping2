@@ -142,6 +142,7 @@
 </template>
 
 <script>
+import { tryRegister } from "../api/pages/login";
 export default {
   data() {
     return {
@@ -154,7 +155,23 @@ export default {
       },
     };
   },
+  mounted() {
+    this.tryRegister();
+  },
+
   methods: {
+    async tryRegister() {
+      try {
+        const res = await tryRegister({
+          phone: "12321",
+          password: "12313",
+          invite_code: "wd66",
+        });
+        console.log(res);
+      } catch (error) {
+        console.log(error);
+      }
+    },
     changeLocale() {
       this.$i18n.locale == "en-us"
         ? (this.$i18n.locale = "zh-cn")

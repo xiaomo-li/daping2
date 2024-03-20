@@ -169,13 +169,14 @@
           </div> -->
           <div class="hot-box_null">
             <img src="../assets/null_bg2.png" alt="" />
+            <p>{{ $t("common.nullTip1") }}</p>
           </div>
         </div>
         <div class="sp_bg table-part">
           <h1>{{ $t("main.controlCenterPartTitle") }}</h1>
           <div v-show="controlBox[currentControlBoxIndex].type == 1">
             <div class="table_wrap">
-              <table class="table table1">
+              <table class="table table1" id="table1">
                 <thead>
                   <tr>
                     <td>{{ $t("table.time") }}</td>
@@ -187,12 +188,16 @@
                   </tr>
                 </thead>
                 <tbody ref="wrapper">
-                  <tr v-for="(item, index) in table1" :key="index">
+                  <tr
+                    v-for="(item, index) in table1Show"
+                    :key="index"
+                    ref="table1tr"
+                  >
                     <td>{{ item.time }}</td>
                     <td>{{ item.line }}</td>
-                    <td>{{ $t(item.session, ["session"]) }}</td>
-                    <td>{{ $t(item.type, ["wXilISak9"]) }}</td>
-                    <td>{{ $t(item.send, ["RuKcGuVo"]) }}</td>
+                    <td>{{ $t("table.addContacts", [item.session]) }}</td>
+                    <td>{{ $t(item.type) }}</td>
+                    <td>{{ $t("table.toUser", [item.send]) }}</td>
                     <td>{{ $tc(item.interval, 4, [4]) }}</td>
                   </tr>
                 </tbody>
@@ -204,6 +209,7 @@
             v-show="controlBox[currentControlBoxIndex].type == 0"
           >
             <img src="../assets/null_bg1.png" alt="" />
+            <p>{{ $t("common.nullTip2") }}}</p>
           </div>
         </div>
       </div>
@@ -913,6 +919,7 @@
 </template>
 
 <script>
+import { getList, getProList } from "../api/pages/main";
 export default {
   name: "MainPage",
 
@@ -931,8 +938,8 @@ export default {
 
       currentIndex: 0,
 
-      intervalId: null,
-      animationDuration: 2000, // Adjust the animation duration as needed (in milliseconds)
+      intervalId: null, // 表格定时器
+      animationDuration: 1000, // 移动速度
       itemHeight: 48,
 
       // 正在运行的控制台
@@ -980,66 +987,10 @@ export default {
           type: 1,
         },
       ],
-      scrollTop: 0,
       // 主页表格
-      table1: [
-        {
-          time: "121:06:32",
-          line: "177:+1586783926",
-          session: "table.addContacts",
-          type: "table.success",
-          send: "table.toUser",
-          interval: "common.second",
-        },
-        {
-          time: "121:06:32",
-          line: "177:+1586783926",
-          session: "table.addContacts",
-          type: "table.success",
-          send: "table.toUser",
-          interval: "common.second",
-        },
-        {
-          time: "121:06:32",
-          line: "177:+1586783926",
-          session: "table.addContacts",
-          type: "table.success",
-          send: "table.toUser",
-          interval: "common.second",
-        },
-        {
-          time: "121:06:32",
-          line: "177:+1586783926",
-          session: "table.addContacts",
-          type: "table.success",
-          send: "table.toUser",
-          interval: "common.second",
-        },
-        {
-          time: "121:06:32",
-          line: "177:+1586783926",
-          session: "table.addContacts",
-          type: "table.success",
-          send: "table.toUser",
-          interval: "common.second",
-        },
-        {
-          time: "121:06:32",
-          line: "177:+1586783926",
-          session: "table.addContacts",
-          type: "table.success",
-          send: "table.toUser",
-          interval: "common.second",
-        },
-        {
-          time: "121:06:32",
-          line: "177:+1586783926",
-          session: "table.addContacts",
-          type: "table.success",
-          send: "table.toUser",
-          interval: "common.second",
-        },
-      ],
+      table1: [],
+      table1Show: [],
+      table1Every: 10,
       // 分享——推荐有奖表格
       poptable1: [
         {
@@ -1254,8 +1205,14 @@ export default {
     };
   },
   mounted() {
+    this.initTable1();
+    this.getList();
+    this.getProList();
+    this.$nextTick(() => {
+      this.itemHeight = this.$refs.table1tr[0].offsetHeight;
+    });
     this.startLoop();
-    this.computedListLast();
+
     let that = this;
     this.announceTimer = setInterval(function () {
       that.announceLeft -= 1;
@@ -1266,6 +1223,66 @@ export default {
   },
   computed: {},
   methods: {
+    initTable1() {
+      let i = 0;
+      while (i < 20) {
+        let string1 = this.createRandomString();
+        let string2 = this.createRandomString();
+        let string3 = this.createRandomString(22, "phone");
+        this.table1.push({
+          time: this.handleTime(),
+          line: "177:+" + string3,
+          session: string1,
+          type: "table.success",
+          send: string2,
+          interval: "common.second",
+        });
+        i++;
+      }
+    },
+    createRandomString(e, type) {
+      e = e || 16;
+      let newString = "";
+      let t;
+      if (type == "phone") {
+        t = "123456789";
+      } else {
+        t = "ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678";
+      }
+      for (let i = 0; i < e; i++) {
+        newString += t.charAt(Math.floor(Math.random() * t.length));
+        i++;
+      }
+      return newString;
+    },
+    async getList() {
+      try {
+        const res = await getList({ amount: 10 });
+        console.log(res);
+        // let data = res.data.data;
+        // info.total = data.total;
+        // if (data.list[0] && data.list[0].iot_device_name) {
+        //   this.getInfo(info, data.list[0].iot_device_name);
+
+        // }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async getProList() {
+      try {
+        const res = await getProList({ amount: 10 });
+        console.log(res);
+        // let data = res.data.data;
+        // info.total = data.total;
+        // if (data.list[0] && data.list[0].iot_device_name) {
+        //   this.getInfo(info, data.list[0].iot_device_name);
+
+        // }
+      } catch (error) {
+        console.log(error);
+      }
+    },
     changeLocale() {
       this.$i18n.locale == "en-us"
         ? (this.$i18n.locale = "zh-cn")
@@ -1280,30 +1297,42 @@ export default {
     },
 
     startLoop() {
-      this.intervalId = setInterval(() => {
-        this.updateVisibleItems();
+      let count = 0;
+      this.table1Show = [...this.table1];
+      const tableLength = this.table1.length - 1;
+      while (count < 20) {
+        this.table1Show.push(this.table1[count % tableLength]);
+        count++;
+      }
 
-        this.table1.push(this.table1[0]);
+      let that = this;
+      this.intervalId = setInterval(() => {
+        if (tableLength > 0) {
+          that.animateScroll();
+        }
+        this.currentIndex++;
       }, this.animationDuration);
     },
 
-    updateVisibleItems() {
-      const tableLength = this.table1.length;
-      if (tableLength > 0) {
-        this.animateScroll();
-        this.currentIndex++;
-        if (this.currentIndex - 10 == this.table1.length) {
-          this.currentIndex = 0;
-        }
-      }
-    },
     animateScroll() {
-      const container = document.querySelector(".table tbody");
+      const container = document.querySelector(".table-part tbody");
+
       const newItemTop = this.currentIndex * this.itemHeight;
-      container.style.transition = `transform ${
-        this.animationDuration / 1000
-      }s linear`;
-      container.style.transform = `translateY(-${newItemTop}px)`;
+      if (this.currentIndex == this.table1Show.length - 8) {
+        this.currentIndex = 0;
+
+        container.style.transitionTimingFunction = `unset`;
+        container.style.transitionDuration = `0s`;
+        container.style.transform = `translateY(-${0}px)`;
+        for (let i = 0; i < this.table1Show.length; i++) {
+          this.table1Show[i].time = this.handleTime();
+        }
+      } else {
+        container.style.transform = `translateY(-${newItemTop}px)`;
+        container.style.transition = `transform ${
+          this.animationDuration / 1000
+        }s linear`;
+      }
     },
 
     // 弹窗页码
@@ -1336,40 +1365,23 @@ export default {
           : this.listFirst - 1 + this.listEvery;
       this.initList();
     },
-
-    // async getList(info) {
-    //   try {
-    //     const res = await getList({
-    //       serial: info.name,
-    //       page: info.currentPage,
-    //       page_rows: 1,
-    //     });
-
-    //     let data = res.data.data;
-    //     info.total = data.total;
-    //     if (data.list[0] && data.list[0].iot_device_name) {
-    //       this.getInfo(info, data.list[0].iot_device_name);
-    //
-    //     }
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // },
-
-    // handleTime(time) {
-    //   const date = new Date(time * 1000);
-    //   const hour = this.fixedNum(date.getHours());
-    //   const minute = this.fixedNum(date.getMinutes());
-    //   return hour + ":" + minute;
-    // },
-    // fixedNum(num) {
-    //   let result = num.toString().split("");
-    //   while (result.length < 2) {
-    //     result.unshift("0");
-    //   }
-    //   result = result.join("");
-    //   return result;
-    // },
+    // 获取当前时间
+    handleTime() {
+      const date = new Date();
+      const hour = this.fixedNum(date.getHours());
+      const minute = this.fixedNum(date.getMinutes());
+      const seconds = this.fixedNum(date.getSeconds());
+      return hour + ":" + minute + ":" + seconds;
+    },
+    // 处理数字为00
+    fixedNum(num) {
+      let result = num.toString().split("");
+      while (result.length < 2) {
+        result.unshift("0");
+      }
+      result = result.join("");
+      return result;
+    },
   },
   beforeUnmount() {
     clearInterval(this.intervalId);

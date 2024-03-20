@@ -106,7 +106,8 @@ input[type="number"] {
 .loginPage {
   width: 100%;
   height: 100vh;
-  background: url("./assets/login-bg.png");
+  /* background: url("./assets/login-bg.png"); */
+  background-image: url("https://gif-1300123308.cos.ap-nanjing.myqcloud.com/11/%E7%BB%84%2035%20%E6%8B%B7%E8%B4%9D.png");
   background-repeat: no-repeat;
   background-size: 100% 100%;
   display: flex;
@@ -252,7 +253,8 @@ input[type="number"] {
   width: 100%;
   height: 100vh;
   height: 1400px;
-  background: url("./assets/main-bg.png");
+  /* background: url("./assets/main-bg.png"); */
+  background-image: url("https://gif-1300123308.cos.ap-nanjing.myqcloud.com/11/%E7%BB%84%2022.png");
   background-repeat: no-repeat;
   background-size: 100% 100%;
 }
@@ -570,9 +572,14 @@ input[type="number"] {
 .hot-box_null {
   display: flex;
   align-items: center;
+  flex-direction: column;
   justify-content: center;
   width: 100%;
   height: calc(100% - 75px);
+  font-family: "AlibabaPuHuiTi_2_65_Medium";
+  font-size: 21px;
+  color: #5f7695;
+  text-align: center;
 }
 .null_control img,
 .center-part .hot-box_null img {
@@ -624,20 +631,7 @@ input[type="number"] {
   top: 0;
   z-index: 5;
 }
-.table1 {
-  position: relative;
-}
-.table1::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 3;
-}
+
 .table1 thead {
   background-color: #041938;
 }

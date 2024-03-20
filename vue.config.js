@@ -7,7 +7,14 @@ module.exports = defineConfig({
     client: {
       webSocketURL: "ws://0.0.0.0:8080/ws",
     },
+    proxy: {
+      "/api": {
+        target: "http://38.55.215.190:6328/",
+        changeOrigin: true,
+      },
+    },
   },
+
   publicPath: "./",
   outputDir: "daping2",
 });
